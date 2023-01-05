@@ -148,7 +148,7 @@ public class ByteBank
 
             Console.WriteLine("Please type your name:");
             String? personName = Console.ReadLine();
-            if ( personName == null) {Console.WriteLine("Invalid name!\nReturning to login menu..."); Console.ReadKey(); return; }
+            if ( personName == null || personName == "") {Console.WriteLine("Invalid name!\nReturning to login menu..."); Console.ReadKey(); return; }
 
             SavedAccounts.Add(new LoginData(login, password, personName));
             Console.WriteLine("Account succesfully created! Returning to login menu...");
