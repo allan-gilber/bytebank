@@ -63,6 +63,7 @@ public class ByteBank
                         _DeleteAccount();
                         break;
                     case 3:
+                        _ListAllAccountData();
                         break;
                     case 4:
                         break;
@@ -105,6 +106,13 @@ public class ByteBank
 
             SavedAccounts.RemoveAt(indexOfTheAccount);
             Console.WriteLine("The account was succesfully removed!");
+        }
+
+        private static void _ListAllAccountData()
+        {
+            Console.WriteLine("--------------------------------------");
+            SavedAccounts.ForEach(account => Console.WriteLine(account.ToString()));
+            Console.WriteLine("--------------------------------------"); 
         }
 
 
