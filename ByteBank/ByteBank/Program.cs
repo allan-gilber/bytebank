@@ -22,7 +22,11 @@ public class ByteBank
 
         public override String ToString()
         {
-            return _login + "\n" + _password + "\n" + _personName + "\n" + _LoginStatus + "\n" + _AccountBalance;
+            return "Login: " + _login + "| " + 
+                "Password: " + _password + "| " + 
+                "PersonName: " + _personName + "| " +
+                "Login Status: " + _LoginStatus + "| " +
+                "Account Balance: " + _AccountBalance;
         } 
     }
 
@@ -66,6 +70,7 @@ public class ByteBank
                         _ListAllAccountData();
                         break;
                     case 4:
+                        _ListAccountData();
                         break;
                     case 5:
                         break;
@@ -108,14 +113,23 @@ public class ByteBank
             Console.WriteLine("The account was succesfully removed!");
         }
 
+        private static void _ListAccountData()
+        {
+            Console.WriteLine("Type the account login to be shown:");
+            String? userInput = Console.ReadLine();
+
+            Console.WriteLine("--------------------------------------");
+            int indexOfTheAccount = SavedAccounts.FindIndex(account => account._login == userInput);
+            if (indexOfTheAccount == -1) { Console.WriteLine("Account not found"); return; }
+            Console.WriteLine(SavedAccounts[indexOfTheAccount].ToString());
+            Console.WriteLine("--------------------------------------");
+        }
         private static void _ListAllAccountData()
         {
             Console.WriteLine("--------------------------------------");
             SavedAccounts.ForEach(account => Console.WriteLine(account.ToString()));
             Console.WriteLine("--------------------------------------"); 
         }
-
-
     }
 
     public static void Main(string[] args)
