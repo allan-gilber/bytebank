@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 public class ByteBank
 {
@@ -37,6 +38,8 @@ public class ByteBank
         private const String InvalidLoginMessage = "Failed to login: incorrect login and/or password";
         private static bool MainLoopControler = true;
         private static bool InternalMenuLoopControler = true;
+        private static CultureInfo culture = CultureInfo.CreateSpecificCulture("pt-BR");
+        private static NumberStyles style = NumberStyles.AllowDecimalPoint;
 
         public static void WriteLoginMenu()
         {
@@ -168,7 +171,7 @@ public class ByteBank
 
             Console.WriteLine("Type your password:");
             String? userInputPassword = Console.ReadLine();
-            if (userInputLogin == null) { Console.WriteLine(InvalidLoginMessage); return; }
+            if (userInputPassword == null) { Console.WriteLine(InvalidLoginMessage); return; }
 
             int indexOfTheAccount = SavedAccounts.FindIndex(account => account._login == userInputLogin);
             if (indexOfTheAccount == -1) { Console.WriteLine(InvalidLoginMessage); return; }
@@ -213,15 +216,16 @@ public class ByteBank
 
         private static void _ShowBalance()
         {
-            Console.WriteLine("Your balance is: R$ {0:##}", LoggedAccount!._AccountBalance);
+            Console.WriteLine("Your balance is: R$ {0:F2}", LoggedAccount!._AccountBalance);
         }
 
         private static void _Withdrawn()
         {
-            Console.WriteLine("Your balance is: R$ ${0:00}\nType the amount you wanna withdrawn:", LoggedAccount._AccountBalance);
+            Console.WriteLine("Your balance is: R$ ${0:F2}\nType the amount you wanna withdrawn:", LoggedAccount._AccountBalance);
             string userInput = Console.ReadLine();
             decimal withdrawnAmount;
-            if (Decimal.TryParse(userInput, out withdrawnAmount)) {  
+            if (Decimal.TryParse(userInput, style, culture, out withdrawnAmount)) {
+                Console.WriteLine("total: ", withdrawnAmount);
                 if(LoggedAccount?._AccountBalance < withdrawnAmount) { Console.WriteLine("The withdrawn was not possible due to insuficient balance"); return;}
                 LoggedAccount!._AccountBalance = LoggedAccount._AccountBalance - withdrawnAmount;
                 Console.WriteLine("Withdrawn was succesfully!");
@@ -238,24 +242,44 @@ public class ByteBank
             Console.WriteLine("Type the amount you wanna deposit:");
             string userInput = Console.ReadLine();
             decimal depositAmount;
-            if (Decimal.TryParse(userInput, out depositAmount))
+            if (Decimal.TryParse(userInput, style, culture, out depositAmount))
             {
-                LoggedAccount!._AccountBalance = LoggedAccount._AccountBalance + depositAmount;
+                LoggedAccount!._AccountBalance += depositAmount;
 
             }
         }
 
-            private static void _Transfer()
+        private static void _Transfer()
         {
-            Console.WriteLine("--------------------------------------");
-            SavedAccounts.ForEach(account => Console.WriteLine(account.ToString()));
-            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("Type the account login that you wanna transfer:");
+            String? userInputTargetAccount= Console.ReadLine();
+            if (userInputTargetAccount == null || LoggedAccount!._login == userInputTargetAccount) { Console.WriteLine("Invalid account login"); return; }
+
+            int indexOfTheTargetAccount = SavedAccounts.FindIndex(account => account._login == userInputTargetAccount);
+            if (indexOfTheTargetAccount == -1) { Console.WriteLine("The target account was not found!\n Returning to main menu..."); return; }
+
+            Console.WriteLine("Type the amount you wanna transfer:");
+
+            string userInputTransferAmount = Console.ReadLine();
+            decimal transferAmount;
+            if (!Decimal.TryParse(userInputTransferAmount, style, culture, out transferAmount) || transferAmount == 0 || transferAmount > LoggedAccount!._AccountBalance) { 
+                Console.WriteLine("Invalid trasnfer amount!\n returning to main menu...");
+                Console.ReadKey();
+                return; 
+            }
+
+            Console.WriteLine("Do you wanna trasnfer R$ {0:F2} to {1}?\nType your password to confirm:", transferAmount, userInputTargetAccount);
+            String? userInputPassword = Console.ReadLine();
+            if (userInputPassword == null || userInputPassword != LoggedAccount._password) { Console.WriteLine("Invalid password!\n returning to main menu..."); return; }
+
+
+            LoggedAccount._AccountBalance -= transferAmount;
+            SavedAccounts[indexOfTheTargetAccount]._AccountBalance += transferAmount;
+                // SavedAccounts.ElementAt(indexOfTheAccount);
+            Console.WriteLine("Sucessfully transfered R$ {0:F2} to {1}\nReturning to main menu...", transferAmount, userInputTargetAccount);
+            Console.ReadKey();
+            MainMenu();
         }
-
-
-
-
-
     }
 
     public static void Main(string[] args)
