@@ -3,6 +3,7 @@
 public class ByteBank
 {
     private static List<LoginData> SavedAccounts = new List<LoginData>();
+    private static LoginData? LoggedAccount;
     private const  String InvalidOptionMessage = "Invalid option. Please type a valid number from the menu below:";
 
     class LoginData
@@ -30,11 +31,11 @@ public class ByteBank
         } 
     }
 
-    class BankMenu
+    class BankApp
     {
         private static bool MainLoopControler = true;
 
-        public static void WriteMenu()
+        public static void WriteMenuMainMenu()
         {
             Console.WriteLine("1 - Inserir novo usuário");
             Console.WriteLine("2 - Deletar um usuário");
@@ -46,11 +47,11 @@ public class ByteBank
             Console.Write("Digite a opção desejada: ");
         }
 
-        public static void ProcessOption() {
+        public static void MainMenu() {
 
             while (MainLoopControler)
             {
-                BankMenu.WriteMenu();
+                BankMenu.WriteMenuMainMenu();
                 String userInput = Console.ReadLine();
                 int choosedOption;
                 if (!Int32.TryParse(userInput, out choosedOption)) { Console.WriteLine(InvalidOptionMessage); continue; }
@@ -130,11 +131,18 @@ public class ByteBank
             SavedAccounts.ForEach(account => Console.WriteLine(account.ToString()));
             Console.WriteLine("--------------------------------------"); 
         }
+
+        private static void _ShowBalance()
+        {
+            Console.WriteLine("--------------------------------------");
+            SavedAccounts.ForEach(account => Console.WriteLine(account.ToString()));
+            Console.WriteLine("--------------------------------------");
+        }
     }
 
     public static void Main(string[] args)
     {
-        BankMenu.ProcessOption();
+        BankApp.MainMenu();
         Console.Write("The application has been successfully terminated");
     }
 }
