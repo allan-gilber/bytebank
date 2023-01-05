@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ByteBank": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
