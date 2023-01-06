@@ -38,6 +38,7 @@ public class ByteBank
         private const string InvalidOptionMessage = "Invalid option. Please type a valid number from the menu below:";
         private const string InvalidLoginMessage = "Failed to login: incorrect login and/or password.";
         private const string ReturnToMainMenu = "Returning to main menu...";
+        private const string ReturnToLoginMenu = "Returning to login menu...";
 
         public static void LoginMenu()
         {
@@ -138,20 +139,20 @@ public class ByteBank
             Console.Clear();
             Console.WriteLine("Please type your login:");
             string? login = Console.ReadLine();
-            if (login == null || login == "") { Console.WriteLine("Invalid login!\nReturning to login menu..."); Console.ReadKey(); return; }
+            if (login == null || login == "") { Console.WriteLine("Invalid login!\n{0}", ReturnToLoginMenu); Console.ReadKey(); return; }
             int checkIfAccountAlreadyExists = SavedAccounts.FindIndex(account => account._login == login);
-            if (!(checkIfAccountAlreadyExists == -1)) { Console.WriteLine("Account login already exists! Returning to login menu..."); Console.ReadKey(); Console.ReadKey(); return; }
+            if (!(checkIfAccountAlreadyExists == -1)) { Console.WriteLine("Account login already exists! {0}", ReturnToLoginMenu); Console.ReadKey(); Console.ReadKey(); return; }
 
             Console.WriteLine("Please type a password for your account:");
             string? password = Console.ReadLine();
-            if (password == null || password == "") {Console.WriteLine("invalid/null Password!\nReturning to login menu..."); Console.ReadKey(); return; }
+            if (password == null || password == "") {Console.WriteLine("invalid/null Password!\n{0}", ReturnToLoginMenu); Console.ReadKey(); return; }
 
             Console.WriteLine("Please type your name:");
             string? personName = Console.ReadLine();
-            if ( personName == null || personName == "") {Console.WriteLine("Invalid name!\nReturning to login menu..."); Console.ReadKey(); return; }
+            if ( personName == null || personName == "") {Console.WriteLine("Invalid name!\n{0}", ReturnToLoginMenu); Console.ReadKey(); return; }
 
             SavedAccounts.Add(new LoginData(login, password, personName));
-            Console.WriteLine("Account succesfully created! Returning to login menu...");
+            Console.WriteLine("Account succesfully created! {0}", ReturnToLoginMenu);
             Console.ReadKey();
         }
 
@@ -200,11 +201,6 @@ public class ByteBank
             InternalMenuLoopControler = false;
             Console.WriteLine("Succesfully logged out.");
             Console.ReadKey();
-        }
-
-        private static void _AppShutdown()
-        {
-            MainLoopControler = false;
         }
 
         private static void _ListAccountData()
@@ -357,12 +353,16 @@ public class ByteBank
             }
             else
             {
-                Console.WriteLine("Failure in updating account data.\nReturning to login menu....");
+                Console.WriteLine("Failure in updating account data.\n{0}.", ReturnToLoginMenu);
                 Console.ReadKey();
                 _Logout();
             }
         }
 
+        private static void _AppShutdown()
+        {
+            MainLoopControler = false;
+        }
     }
 
     public static void Main(string[] args)
