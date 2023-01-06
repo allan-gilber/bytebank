@@ -10,7 +10,6 @@ public class ByteBank
         public String _login { get; set; }
         public String _password { get; set; }
         public String _personName { get; set; }
-        public bool _LoginStatus { get; set; } = false;
         public decimal _AccountBalance { get; set; } = 0.00M;
         public LoginData(String login,String password, String personName)
         {
@@ -23,7 +22,6 @@ public class ByteBank
             return "Login: " + _login + " | " + 
                 "Password: " + _password + " | " + 
                 "PersonName: " + _personName + " | " +
-                "Login Status: " + _LoginStatus + " | " +
                 "Account Balance: " + _AccountBalance;
         } 
     }
